@@ -1,0 +1,22 @@
+from datetime import datetime, timedelta
+from airflow import DAG
+from airflow.operators.bash import BashOperator
+
+default_args = {
+    'owner': 'me',
+    'retries': 5,
+    'retry_delay': timedelta(minutes=2)
+}
+
+with DAG(
+    dag_id='dag_with_cron_exp',
+    default_args=default_args,
+    start_date=datetime(2023, 5, 1),
+    # cron schedule expression
+    schedule_interval='0 3 * * Tue',
+    catchup=True
+) as dag:
+    task1 = BashOperator(
+        task_id='task1',
+        bash_command='echo this is a simple bash command!'
+    )
